@@ -8,12 +8,13 @@
  * Author: Fergus William Leahy
  * 
  */
-#ifndef CALLBACK_TIMER_H
-#define CALLBACK_TIMER_H
+#ifndef MULTI_TIMER_H
+#define MULTI_TIMER_H
 #include <TimerOne.h>
 
+typedef struct timer Timer;
 /*Initialises the timer */
-void init_timer();
+void mt_init();
 
 /*
  * Adds a timer to the timer queue.
@@ -21,19 +22,20 @@ void init_timer();
  * Parameters: timer specifies the timer duration,
  *             val is passed to the callback function upon timer expiry 
  *             and call to run_next_expired()
- * Returns 0 if queue is full, 1 otherwise. */
-int set_timer(double timer, int val, void(*callback)(int));
+ * Returns NULL if queue is full, a Timer otherwise. */
+Timer *mt_set_timer(double timer, int immediate, void(*callback)(void *), void *val);
 
-/* Returns the number of timers that have expired, 0 otherwise */
-int timer_expired();
+/* Returns the number of timers that have expired*/
+int mt_timer_expired();
 
-/* Runs the callback function for the next expired timer */
-int run_next_expired_timer();
+/* Runs the callback function for the next expired timer, 
+ * returns 1 if a function has been run, 0 otherwise */
+int mt_run_next_expired_timer();
 
 /* Runs the callback function for all expired timers */
-void run_all_expired_timers();
+void mt_run_all_expired_timers();
 
 /* removes the timer referenced by the id */
-void remove_timer(int id);
+void mt_remove_timer(Timer *t);
 
-#endif /* CALLBACK_TIMER_H */
+#endif /* MULTI_TIMER_H */
